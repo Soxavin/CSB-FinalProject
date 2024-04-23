@@ -61,7 +61,7 @@ def get_detailed_recommendations(farm_data, ideal_crop_conditions):
     conditions = [
         'Soil Nitrogen', 'Soil Phosphorus', 'Soil Potassium', 
         'Pest Occurrences', 'Disease Occurrences', 'Irrigation Method', 
-        'Temperature', 'Rainfall', 'Machinery Usage', 'Crop Rotation', 'Pesticide Usage'
+        'Temperature', 'Rainfall', 'Crop Rotation', 'Pesticide Usage'
     ]
 
     for crop in farm_data.index:
@@ -75,7 +75,10 @@ def get_detailed_recommendations(farm_data, ideal_crop_conditions):
             if condition == 'Pest Occurrences':
                 # Handle special case for Pest Occurrences
                 if actual != ideal and actual != 'Low':
-                    recs.append(f"- **{condition}**: adjust from `{actual}` to `{ideal}`.")
+                    actual_val = ['Low', 'Medium','Moderate', 'High'].index(actual)
+                    ideal_val = ['Low', 'Medium','Moderate', 'High'].index(ideal)
+                    if actual_val > ideal_val:
+                        recs.append(f"- **{condition}**: adjust from `{actual}` to `{ideal}`.")
             
             elif condition == 'Disease Occurrences':
                 # Handle special case for Disease Occurrences
