@@ -72,8 +72,12 @@ def get_detailed_recommendations(farm_data, ideal_crop_conditions):
         for condition in conditions:
             actual = crop_data.get(condition, None)
             ideal = ideal_data.get(condition, None)
-
-            if condition == 'Disease Occurrences':
+            if condition == 'Pest Occurrences':
+                # Handle special case for Pest Occurrences
+                if actual != ideal and actual != 'Low':
+                    recs.append(f"- **{condition}**: adjust from `{actual}` to `{ideal}`.")
+            
+            elif condition == 'Disease Occurrences':
                 # Handle special case for Disease Occurrences
                 if actual == 'None':
                     # Skip adjustment if current disease occurrences are None
