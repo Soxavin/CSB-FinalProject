@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 import os
+import numpy as np
 
 @st.cache_data
 # @st.cache(allow_output_mutation=True)
@@ -54,6 +55,7 @@ def categorize_crops(predicted_yield):
         'Low Yield': predicted_yield[predicted_yield['Predicted Yield'] == 'Low']['Crop'].tolist()
     }
 
+
 def get_detailed_recommendations(farm_data, ideal_crop_conditions):
     recommendations = {}
     conditions = [
@@ -68,20 +70,32 @@ def get_detailed_recommendations(farm_data, ideal_crop_conditions):
         recs = []
 
         for condition in conditions:
-            actual = crop_data.get(condition)
-            ideal = ideal_data.get(condition)
+            actual = crop_data.get(condition, None)
+            ideal = ideal_data.get(condition, None)
 
-            if actual is not None and ideal is not None:
+            if condition == 'Disease Occurrences':
+                # Handle special case for Disease Occurrences
+                if actual == 'None':
+                    # Skip adjustment if current disease occurrences are None
+                    continue
+                else:
+                    # Check if actual value is NaN
+                    if actual is not np.nan:
+                        actual_val = ['None', 'Low', 'Medium','Moderate', 'High'].index(actual)
+                        ideal_val = ['None', 'Low', 'Medium','Moderate', 'High'].index(ideal)
+                        if actual_val > ideal_val:
+                            recs.append(f"- **{condition}**: decrease from `{actual}` to `{ideal}`.")
+            elif actual is not None and ideal is not None and actual != ideal:
+                # General case for other conditions
                 try:
-                    actual_val = float(actual)
-                    ideal_val = float(ideal)
+                    actual_val = float(actual) if actual != 'None' else 0
+                    ideal_val = float(ideal) if ideal != 'None' else 0
                     if actual_val != ideal_val:
                         action = "increase" if actual_val < ideal_val else "decrease"
                         recs.append(f"- **{condition}**: {action} from `{actual}` to `{ideal}`.")
                 except ValueError:
-                    # Handle cases where conversion to float fails, indicating non-numeric data
-                    if str(actual) != str(ideal):
-                        recs.append(f"- **{condition}**: adjust from `{actual}` to `{ideal}`.")
+                    # For non-numeric conditions, adjust only if they don't match and neither is 'None'
+                    recs.append(f"- **{condition}**: adjust from `{actual}` to `{ideal}`.")
 
         if not recs:
             recommendations[crop] = "Current conditions are well-aligned with the ideal. Maintain the same practices."
@@ -89,6 +103,9 @@ def get_detailed_recommendations(farm_data, ideal_crop_conditions):
             recommendations[crop] = "To meet ideal conditions or for better yield, consider adjusting:\n" + "\n".join(recs)
 
     return recommendations
+
+
+
 
 def display_recommendations(recommendations, predicted_yield):
     # First, sort the crops based on the yield categories 'Moderate', 'Low', then 'High'
