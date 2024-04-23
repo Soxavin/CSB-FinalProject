@@ -1,0 +1,31 @@
+Farm ID,Crop,Soil Nitrogen,Soil Phosphorus,Soil Potassium,Pest Occurrences,Disease Occurrences,Irrigation Method,Temperature,Rainfall,Machinery Usage,Crop Rotation,Pesticide Usage
+1,Wheat,Medium,Low,Medium,High,Low,Sprinkler Irrigation,High,Moderate,Combines,No,Low
+2,Corn,High,High,Medium,Low,High,Furrow Irrigation,Moderate,Low,Harvesters,Yes,High
+3,Soybeans,Medium,Low,High,High,Moderate,Drip Irrigation,Low,High,Tractors,Yes,Moderate
+4,Rice,Low,Medium,High,Medium,None,Flood Irrigation,High,Low,Combines,No,High
+5,Barley,High,Medium,Medium,Medium,Low,Sprinkler Irrigation,High,Moderate,Tractors,Yes,Low
+6,Cotton,Medium,Low,Medium,High,High,Drip Irrigation,Moderate,High,Harvesters,No,Low
+7,Potatoes,Low,Medium,High,Low,Moderate,Furrow Irrigation,Low,Low,Tractors,Yes,High
+8,Apples,High,High,Low,Low,Low,Sprinkler Irrigation,Moderate,High,Combines,No,Moderate
+9,Oranges,Low,Low,Medium,Low,None,Drip Irrigation,High,Moderate,Tractors,Yes,High
+10,Grapes,Medium,High,Low,Medium,Moderate,Flood Irrigation,Low,High,Harvesters,No,Low
+11,Tomatoes,Low,High,High,High,High,Furrow Irrigation,High,Low,Combines,Yes,Moderate
+12,Peanuts,High,Medium,Medium,Medium,Low,Sprinkler Irrigation,Moderate,Moderate,Tractors,No,High
+13,Carrots,Medium,Low,Medium,Medium,None,Drip Irrigation,Low,Low,Harvesters,Yes,High
+14,Onions,High,High,Medium,High,Low,Flood Irrigation,Moderate,High,Tractors,No,Moderate
+15,Watermelon,Medium,Low,Low,High,Moderate,Furrow Irrigation,High,Moderate,Combines,Yes,Low
+16,Strawberries,Low,Medium,High,Medium,High,Sprinkler Irrigation,Low,Low,Tractors,No,High
+17,Blueberries,High,High,Low,Low,None,Drip Irrigation,High,High,Harvesters,Yes,Low
+18,Avocados,Low,Medium,Medium,Medium,Low,Sprinkler Irrigation,Moderate,Low,Combines,No,Moderate
+19,Mangoes,Medium,High,High,Low,High,Flood Irrigation,Low,Moderate,Tractors,Yes,High
+20,Pineapples,High,Medium,Low,Medium,Moderate,Drip Irrigation,High,High,Harvesters,No,Low
+21,Papayas,Medium,Low,Medium,Low,None,Sprinkler Irrigation,Moderate,Low,Tractors,Yes,High
+22,Bananas,Low,Medium,High,High,High,Furrow Irrigation,High,Moderate,Combines,No,Moderate
+23,Lemons,High,High,Low,Medium,Low,Drip Irrigation,Low,High,Tractors,Yes,High
+24,Limes,Medium,Low,High,Medium,High,Flood Irrigation,High,Low,Combines,No,Low
+25,Kiwis,Low,High,Medium,Low,Moderate,Furrow Irrigation,Moderate,Moderate,Tractors,Yes,Moderate
+26,Bell Peppers,High,Medium,Medium,High,None,Sprinkler Irrigation,High,Low,Harvesters,No,Low
+27,Cauliflower,Medium,Low,Low,Low,High,Drip Irrigation,Low,High,Combines,Yes,High
+28,Broccoli,Low,High,High,Medium,Low,Sprinkler Irrigation,Moderate,Low,Tractors,No,Moderate
+29,Asparagus,High,Low,Low,High,High,Furrow Irrigation,High,Moderate,Combines,Yes,High
+30,Eggplants,Medium,Medium,High,Medium,Moderate,Drip Irrigation,Low,Low,Tractors,No,Low

@@ -1,4 +1,4 @@
-Farm ID,Crop Type,Soil Nitrogen,Soil Phosphorus,Soil Potassium,Pest Occurrences,Disease Occurrences,Irrigation Method,Average Temperature,Average Rainfall,Machinery Usage,Crop Rotation,Pesticide Usage
+Farm ID,Crop,Soil Nitrogen,Soil Phosphorus,Soil Potassium,Pest Occurrences,Disease Occurrences,Irrigation Method,Temperature,Rainfall,Machinery Usage,Crop Rotation,Pesticide Usage
 1,Wheat,Medium,High,Medium,Low,Low,Furrow Irrigation,Low,Moderate,Medium,Yes,Low
 2,Corn,High,High,High,Medium,Medium,Sprinkler Irrigation,Moderate,Moderate,High,Yes,Medium
 3,Soybeans,High,Medium,Medium,Low,Low,Drip Irrigation,Moderate,Moderate,Medium,Yes,Low

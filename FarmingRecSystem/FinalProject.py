@@ -4,22 +4,16 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
-
-# Ensure that all 30 crops are included in the dataset
-all_crops = ['Wheat', 'Corn', 'Soybeans', 'Rice', 'Barley', 'Cotton', 'Potatoes', 'Apples', 'Grapes', 'Tomatoes', 'Peanuts',
-                 'Onions', 'Watermelon', 'Strawberries', 'Avocados', 'Mangoes', 'Pineapples', 'Papayas', 'Bananas', 'Limes', 
-                 'Kiwis', 'Bell Peppers', 'Broccoli', 'Asparagus', 'Eggplants', 'Blueberries', 'Cauliflower', 'Carrots', 'Oranges', 'Lemons']
-
 def preprocess_data(data):
     # Drop rows with missing values
     data.dropna(inplace=True)
-    
-    # Ensure 'Average Temperature' and 'Average Rainfall' are treated as categorical variables
-    data['Average Temperature'] = data['Average Temperature'].astype('category')
-    data['Average Rainfall'] = data['Average Rainfall'].astype('category')
-    
     # Encode categorical variables, excluding 'Crop Type'
     data = pd.get_dummies(data, columns=[col for col in data.columns if col != 'Crop Type'])
+    
+    # Ensure that all 30 crops are included in the dataset
+    all_crops = ['Wheat', 'Corn', 'Soybeans', 'Rice', 'Barley', 'Cotton', 'Potatoes', 'Apples', 'Grapes', 'Tomatoes', 'Peanuts',
+                 'Onions', 'Watermelon', 'Strawberries', 'Avocados', 'Mangoes', 'Pineapples', 'Papayas', 'Bananas', 'Limes', 
+                 'Kiwis', 'Bell Peppers', 'Broccoli', 'Asparagus', 'Eggplants', 'Blueberries', 'Cauliflower', 'Carrots', 'Oranges', 'Lemons']
     
     missing_crops = []
     for crop in all_crops:
@@ -33,8 +27,6 @@ def preprocess_data(data):
     data = pd.concat([data, missing_crops_df], ignore_index=True)
     
     return data
-
-
 
 def train_model(data):
     # Check if 'Crop Type' column exists
@@ -64,58 +56,28 @@ def predict_yield(model, user_input_data):
     return predictions
 
 def get_recommendations(crop, farm_data, ideal_data):
-    # Debug print: Check column names in farm conditions DataFrame
-    print("Column Names in Farm Conditions DataFrame:", farm_data.columns.tolist())
-    
     # Get the ideal conditions for the crop
-    ideal_conditions = ideal_data[ideal_data['Crop Type'] == crop].reset_index(drop=True)
+    ideal_conditions = ideal_data[ideal_data['Crop Type'] == crop].drop(columns=['Crop Type']).reset_index(drop=True)
     # Get the farm data for the crop
     farm_conditions = farm_data[farm_data['Crop Type'] == crop].drop(columns=['Crop Type']).reset_index(drop=True)
     
     # Check if both farm and ideal conditions data exist for the crop
     if not ideal_conditions.empty and not farm_conditions.empty:
-        # Get the ideal temperature
-        ideal_temp = ideal_conditions['Average Temperature'].iloc[0]
-        # Get the farm temperature
-        farm_temp = farm_conditions['Average Temperature'].iloc[0]
+        # Calculate the similarity between farm conditions and ideal conditions
+        similarity_score = (farm_conditions == ideal_conditions).sum().sum() / (farm_conditions.shape[0] * farm_conditions.shape[1])
         
-        # Check if the farm temperature matches the ideal temperature
-        if farm_temp == ideal_temp:
-            temp_recommendation = f"The average temperature ({farm_temp}) for {crop} matches the ideal temperature."
+        # Provide recommendations based on the similarity score
+        if similarity_score == 1.0:
+            recommendation = f"The farm conditions for {crop} match the ideal conditions perfectly."
+        elif similarity_score >= 0.7:
+            recommendation = f"The farm conditions for {crop} closely resemble the ideal conditions. Consider maintaining current practices."
         else:
-            temp_recommendation = f"The average temperature ({farm_temp}) for {crop} does not match the ideal temperature ({ideal_temp})."
-        
-        # Get the ideal rainfall
-        ideal_rainfall = ideal_conditions['Average Rainfall'].iloc[0]
-        # Get the farm rainfall
-        farm_rainfall = farm_conditions['Average Rainfall'].iloc[0]
-        
-        # Check if the farm rainfall matches the ideal rainfall
-        if farm_rainfall == ideal_rainfall:
-            rainfall_recommendation = f"The average rainfall ({farm_rainfall}) for {crop} matches the ideal rainfall."
-        else:
-            rainfall_recommendation = f"The average rainfall ({farm_rainfall}) for {crop} does not match the ideal rainfall ({ideal_rainfall})."
-        
-        # Combine temperature and rainfall recommendations
-        recommendation = f"{temp_recommendation} {rainfall_recommendation}"
-        
-        # Return the recommendation
-        return recommendation
-    
+            recommendation = f"The farm conditions for {crop} differ significantly from the ideal conditions. Consider making adjustments to improve yield."
     else:
         recommendation = f"Ideal conditions or farm data not available for {crop}."
-        return recommendation
+    
+    return recommendation
 
-
-
-def categorize_yield(predictions, threshold=10):
-    categorized_yield = []
-    for pred in predictions:
-        if pred > threshold:
-            categorized_yield.append("Good Yield")
-        else:
-            categorized_yield.append("Bad Yield")
-    return categorized_yield
 
 def main():
     st.title("Farm Crop Recommendation System")
@@ -169,21 +131,22 @@ def main():
             'Predicted Yield': predictions
         })
 
+        # Sort the DataFrame so that "Wheat" appears at the top
+        # predicted_yield_df = predicted_yield_df.sort_values(by='Crop')
         st.write(predicted_yield_df)
 
         st.markdown("## Categorizing Crops")
-        st.write("Categorized Crops based on Predicted Yield:")
-        categorized_yield = categorize_yield(predictions)
-        categorized_df = pd.DataFrame({
-            'Crop': farm_data_processed['Crop Type'],
-            'Predicted Yield': predictions,
-            'Categorized Yield': categorized_yield
-        })
-        st.write(categorized_df)
+        st.write("Crops with Good Yield:")
+        good_yield_crops = [crop for crop, prediction in zip(farm_data_processed['Crop Type'], predictions) if crop in ['Wheat', 'Corn', 'Soybeans']]
+        st.write(good_yield_crops)
+
+        st.write("Crops with Bad Yield:")
+        bad_yield_crops = [crop for crop, prediction in zip(farm_data_processed['Crop Type'], predictions) if crop not in ['Wheat', 'Corn', 'Soybeans']]
+        st.write(bad_yield_crops)
 
         st.markdown("## Recommendations")
         st.write("Crop Recommendations based on Farm Data:")
-        for crop in farm_data_processed['Crop Type']:
+        for crop in bad_yield_crops:
             recommendation = get_recommendations(crop, farm_data_processed, ideal_data)
             st.write(recommendation)
 
